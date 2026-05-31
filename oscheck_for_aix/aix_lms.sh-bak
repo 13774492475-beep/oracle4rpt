@@ -1,0 +1,8 @@
+#!/bin/bash
+
+timestamp=$(date +"%Y%m%d_%H%M%S")
+filename="lms_process_count_${timestamp}.txt"
+
+lms_count=$(ps -ef | grep lms | grep -v grep | wc -l)
+
+echo "lms_cnt\$-\$${lms_count}" > "$filename"

@@ -1,0 +1,8 @@
+#!/bin/bash
+
+timestamp=$(date +"%Y%m%d_%H%M%S")
+filename="aix_crs_${timestamp}.txt"
+
+crs_offline_cnt=$(crsctl stat res -t | grep -E "OFFLINE|UNKNOWN" | wc -l)
+
+echo "crs_offline_cnt_linux\$-\$${crs_offline_cnt}" > "$filename"
