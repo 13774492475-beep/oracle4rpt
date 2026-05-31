@@ -1,0 +1,34 @@
+#!/bin/bash
+
+#timestamp=$(date +"%Y%m%d_%H%M%S")
+#filename="flash_use_pct_${timestamp}.csv"
+filename="flash_use_pct.csv"
+
+sqlplus -s "/ as sysdba" <<EOF > /dev/null
+
+SET TERMOUT OFF
+SET ECHO OFF
+SET FEEDBACK OFF
+SET HEADING ON        
+SET UNDERLINE OFF     
+SET PAGESIZE 1000     
+SET NEWPAGE NONE      
+SET LINESIZE 1800     
+SET TRIMSPOOL ON      
+SET TRIMOUT ON        
+SET COLSEP ','        
+SET TIMING OFF
+
+SPOOL $filename
+
+SELECT NAME,
+       TRUNC(SPACE_LIMIT/1024/1024/1024, 3) AS "LIMIT_GB",
+       TRUNC(SPACE_USED/1024/1024/1024, 3) AS "USED_GB",
+       TRUNC(SPACE_USED / SPACE_LIMIT, 3) AS "USED%",
+       TRUNC(SPACE_RECLAIMABLE/1024/1024/1024, 3) AS "RECLAIM_GB",
+       NUMBER_OF_FILES
+  FROM V\$RECOVERY_FILE_DEST
+ WHERE SPACE_LIMIT <> 0;
+
+SPOOL OFF
+EOF
